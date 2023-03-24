@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 
 import Display from "./Display";
 
+let intervalId;
+
 export default () => {
   const [isPlugged, setIsPlugged] = useState(false);
   const [isCharging, setIsCharging] = useState(false);
   const [chartStartTimestamp, setChargeStartTimestamp] = useState(null);
+  const [sessionLength, setSessionLength] = useState(0);
 
   const plugin = () => {
     setIsPlugged(true);
@@ -23,10 +26,25 @@ export default () => {
   }, [isPlugged]);
 
   useEffect(() => {
+    if (!chartStartTimestamp) {
+      setSessionLength(0);
+    }
+  }, [chartStartTimestamp]);
+
+  useEffect(() => {
     if (isCharging) {
-      setChargeStartTimestamp(new Date());
+      const timestamp = new Date();
+      setChargeStartTimestamp(timestamp);
+      intervalId = setInterval(
+        () =>
+          setSessionLength(
+            Math.round((new Date().getTime() - timestamp.getTime()) / 1000)
+          ),
+        1000
+      );
     } else {
       setChargeStartTimestamp(null);
+      clearInterval(intervalId);
     }
   }, [isCharging]);
 
@@ -43,7 +61,7 @@ export default () => {
       <Display
         text={
           isCharging && chartStartTimestamp
-            ? "Charing started at: " + chartStartTimestamp.toString()
+            ? "Charging for: " + sessionLength
             : ""
         }
       />
