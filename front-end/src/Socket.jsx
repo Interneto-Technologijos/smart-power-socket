@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 
+import Display from "./Display";
+
 export default () => {
   const [isPlugged, setIsPlugged] = useState(false);
   const [isCharging, setIsCharging] = useState(false);
+  const [chartStartTimestamp, setChargeStartTimestamp] = useState(null);
 
   const plugin = () => {
     setIsPlugged(true);
@@ -19,6 +22,14 @@ export default () => {
     }
   }, [isPlugged]);
 
+  useEffect(() => {
+    if (isCharging) {
+      setChargeStartTimestamp(new Date());
+    } else {
+      setChargeStartTimestamp(null);
+    }
+  }, [isCharging]);
+
   return (
     <>
       <h2>Socket</h2>
@@ -29,6 +40,13 @@ export default () => {
       <button disabled={!isPlugged} onClick={() => unplug()}>
         Unplug
       </button>
+      <Display
+        text={
+          isCharging && chartStartTimestamp
+            ? "Charing started at: " + chartStartTimestamp.toString()
+            : ""
+        }
+      />
     </>
   );
 };
