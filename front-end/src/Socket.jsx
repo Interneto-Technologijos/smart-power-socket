@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import Display from "./Display";
 
+const WH_PER_SECOND = 0.008333333;
+
 let intervalId;
 
 export default () => {
@@ -9,6 +11,7 @@ export default () => {
   const [isCharging, setIsCharging] = useState(false);
   const [chartStartTimestamp, setChargeStartTimestamp] = useState(null);
   const [sessionLength, setSessionLength] = useState(0);
+  const [whConsumed, setWhConsumed] = useState(0);
 
   const plugin = () => {
     setIsPlugged(true);
@@ -28,23 +31,29 @@ export default () => {
   useEffect(() => {
     if (!chartStartTimestamp) {
       setSessionLength(0);
+      setWhConsumed(0);
     }
   }, [chartStartTimestamp]);
 
   useEffect(() => {
-    if (isCharging) {
+    setWhConsumed(sessionLength * WH_PER_SECOND);
+  }, [sessionLength]);
+
+  useEffect(() => {
+    if (isCharging && !intervalId) {
       const timestamp = new Date();
       setChargeStartTimestamp(timestamp);
-      intervalId = setInterval(
-        () =>
-          setSessionLength(
-            Math.round((new Date().getTime() - timestamp.getTime()) / 1000)
-          ),
-        1000
-      );
-    } else {
+      intervalId = setInterval(() => {
+        setSessionLength(
+          Math.round((new Date().getTime() - timestamp.getTime()) / 1000)
+        );
+      }, 1000);
+    } else if (!isCharging) {
       setChargeStartTimestamp(null);
-      clearInterval(intervalId);
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
     }
   }, [isCharging]);
 
@@ -61,7 +70,11 @@ export default () => {
       <Display
         text={
           isCharging && chartStartTimestamp
-            ? "Charging for: " + sessionLength
+            ? "Charging for: " +
+              sessionLength +
+              " s, Consumed: " +
+              whConsumed.toFixed(2) +
+              " Wh"
             : ""
         }
       />
