@@ -1,16 +1,9 @@
 const path = require("path");
 const http = require("http");
 
-const oas3Tools = require("oas3-tools");
-const serverPort = 3001;
+const app = require("./app");
 
-const app = oas3Tools
-  .expressAppConfig(path.join(__dirname, "./openapi.yaml"), {
-    routing: {
-      controllers: path.join(__dirname, "./controllers"),
-    },
-  })
-  .getApp();
+const serverPort = 3001;
 
 http.createServer(app).listen(serverPort, () => {
   console.log(
