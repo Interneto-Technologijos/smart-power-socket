@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-import Display from "./Display";
+import Display from "../Display";
+
+import * as socketClient from "./client";
 
 const WH_PER_SECOND = 0.008333333;
+const SOCKET_ID = "fce13168-65e2-4f21-8dcb-cda2d3e70c7e";
 
 let intervalId;
 
@@ -16,6 +19,7 @@ export default () => {
   const plugin = () => {
     setIsPlugged(true);
     setIsCharging(true);
+    socketClient.createSocketChargingSession(SOCKET_ID).catch(console.error);
   };
 
   const unplug = () => {

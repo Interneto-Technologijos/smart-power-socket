@@ -15,6 +15,9 @@ const config = {
   devServer: {
     open: true,
     host: "localhost",
+    proxy: {
+      "/socket": "http://localhost:3001",
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({

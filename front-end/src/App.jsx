@@ -1,5 +1,5 @@
 import React from "react";
-import Socket from "./Socket";
+import Socket from "./socket/Socket";
 
 export default () => {
   return (
