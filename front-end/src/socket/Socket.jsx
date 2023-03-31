@@ -29,6 +29,7 @@ export default () => {
   useEffect(() => {
     if (isCharging && !isPlugged) {
       setIsCharging(false);
+      socketClient.closeSocketChargingSession(SOCKET_ID).catch(console.error);
     }
   }, [isPlugged]);
 

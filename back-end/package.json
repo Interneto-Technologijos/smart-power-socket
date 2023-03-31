@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Back-end for Smart Power Socket",
   "scripts": {
-    "start": "node src/index"
+    "start": "nodemon src/index"
   },
   "license": "MIT",
   "dependencies": {

@@ -11,3 +11,7 @@ module.exports.createSocketChargingSession = (req, res, next) => {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.closeSocketChargingSession = (req, res, next) => {
+  utils.writeJson(res);
+};
