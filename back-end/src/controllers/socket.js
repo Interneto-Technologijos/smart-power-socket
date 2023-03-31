@@ -14,5 +14,12 @@ module.exports.createSocketChargingSession = (req, res, next) => {
 };
 
 module.exports.closeSocketChargingSession = (req, res, next) => {
-  utils.writeJson(res);
+  socketChargingSessionService
+    .closeSocketChargingSession()
+    .then((response) => {
+      utils.writeJson(res, response);
+    })
+    .catch((error) => {
+      res.status(400).send({ message: error.message });
+    });
 };

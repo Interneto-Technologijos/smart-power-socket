@@ -22,6 +22,19 @@ describe("Socket API", () => {
             },
           ],
         }));
+    test("socket session close should fail", () =>
+      request(app)
+        .delete(`/socket/${socketId}/charging-session`)
+        .expect(400, {
+          message: 'request.params.socketId should match format "uuid"',
+          errors: [
+            {
+              path: ".params.socketId",
+              message: 'should match format "uuid"',
+              errorCode: "format.openapi.validation",
+            },
+          ],
+        }));
   });
   describe("Valid socket id is provided", () => {
     const socketId = "1b19dd60-9b48-406a-bd3b-297a15702e8d";
@@ -32,6 +45,13 @@ describe("Socket API", () => {
       expect(socketChargingSessionRepository.find()).toMatchObject({
         socketId,
       });
+    });
+    test("socket session close should fail", async () => {
+      await request(app)
+        .delete(`/socket/${socketId}/charging-session`)
+        .expect(400, {
+          message: "Socket charging session is not started",
+        });
     });
     describe("Session for socket ID is already started", () => {
       beforeEach(() => {
@@ -45,6 +65,12 @@ describe("Socket API", () => {
           .expect(400, {
             message: "Socket charging session is already started",
           });
+      });
+      test("socket session should be close", async () => {
+        await request(app)
+          .delete(`/socket/${socketId}/charging-session`)
+          .expect(200);
+        expect(socketChargingSessionRepository.find()).toBeUndefined();
       });
     });
   });
