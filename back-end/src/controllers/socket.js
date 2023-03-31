@@ -23,3 +23,14 @@ module.exports.closeSocketChargingSession = (req, res, next) => {
       res.status(400).send({ message: error.message });
     });
 };
+
+module.exports.updateSocketChargingSession = (req, res, next) => {
+  socketChargingSessionService
+    .updateSocketChargingSession(req.body)
+    .then((response) => {
+      utils.writeJson(res, response);
+    })
+    .catch((error) => {
+      res.status(400).send({ message: error.message });
+    });
+};

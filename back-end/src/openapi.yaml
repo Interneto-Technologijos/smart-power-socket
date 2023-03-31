@@ -46,7 +46,39 @@ paths:
             format: uuid
       responses:
         "200":
-          description: Charging session closed
+          description: Charging session is closed
         "400":
           description: Invalid input
       x-swagger-router-controller: socket
+    put:
+      tags:
+        - socket
+      summary: Update existing charging session for smart socket
+      description: Update existing charging session
+      operationId: updateSocketChargingSession
+      parameters:
+        - name: socketId
+          in: path
+          description: Socket ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        "$ref": "#/components/schemas/ChargingSessionDetails"
+      responses:
+        "200":
+          description: Charging session is updated
+        "400":
+          description: Invalid input
+      x-swagger-router-controller: socket
+components:
+  schemas:
+    ChargingSessionDetails:
+      type: object
+      properties:
+        whConsumed:
+          type: number
+          format: double
+      required:
+        - "whConsumed"

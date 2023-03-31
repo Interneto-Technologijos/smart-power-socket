@@ -4,6 +4,10 @@ module.exports.save = (chargingSession) => {
   chargingSessions.push(chargingSession);
 };
 
+module.exports.update = (chargingSession) => {
+  chargingSessions[0] = { ...chargingSessions[0], ...chargingSession };
+};
+
 module.exports.delete = () => {
   chargingSessions.pop();
 };

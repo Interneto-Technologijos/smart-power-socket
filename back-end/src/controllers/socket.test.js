@@ -35,6 +35,19 @@ describe("Socket API", () => {
             },
           ],
         }));
+    test("socket session update should fail", () =>
+      request(app)
+        .put(`/socket/${socketId}/charging-session`)
+        .expect(400, {
+          message: 'request.params.socketId should match format "uuid"',
+          errors: [
+            {
+              path: ".params.socketId",
+              message: 'should match format "uuid"',
+              errorCode: "format.openapi.validation",
+            },
+          ],
+        }));
   });
   describe("Valid socket id is provided", () => {
     const socketId = "1b19dd60-9b48-406a-bd3b-297a15702e8d";
@@ -49,6 +62,13 @@ describe("Socket API", () => {
     test("socket session close should fail", async () => {
       await request(app)
         .delete(`/socket/${socketId}/charging-session`)
+        .expect(400, {
+          message: "Socket charging session is not started",
+        });
+    });
+    test("socket session close should fail", async () => {
+      await request(app)
+        .put(`/socket/${socketId}/charging-session`)
         .expect(400, {
           message: "Socket charging session is not started",
         });
@@ -71,6 +91,29 @@ describe("Socket API", () => {
           .delete(`/socket/${socketId}/charging-session`)
           .expect(200);
         expect(socketChargingSessionRepository.find()).toBeUndefined();
+      });
+      describe("Consumed power is not provided", () => {
+        test.skip("socket session update should fail", async () => {
+          await request(app)
+            .put(`/socket/${socketId}/charging-session`)
+            .send({})
+            .expect(400, {
+              message: "error",
+            });
+        });
+      });
+      describe("Consumed power is provided", () => {
+        const whConsumed = 123.456;
+        test("socket session should be updated", async () => {
+          await request(app)
+            .put(`/socket/${socketId}/charging-session`)
+            .send({ whConsumed })
+            .expect(200);
+          expect(socketChargingSessionRepository.find()).toMatchObject({
+            socketId,
+            whConsumed,
+          });
+        });
       });
     });
   });

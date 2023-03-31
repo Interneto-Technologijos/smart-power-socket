@@ -13,3 +13,10 @@ exports.closeSocketChargingSession = async () => {
   }
   socketChargingSessionRepository.delete();
 };
+
+exports.updateSocketChargingSession = async (chargingSession) => {
+  if (!socketChargingSessionRepository.find()) {
+    throw Error("Socket charging session is not started");
+  }
+  socketChargingSessionRepository.update(chargingSession);
+};
