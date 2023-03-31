@@ -1,4 +1,4 @@
-# Smart Power Socket WEB System
+# Smart Power Socket WEB App
 
 ## To run WEB app in dev env
 

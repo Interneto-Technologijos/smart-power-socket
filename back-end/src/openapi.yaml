@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+  title: Smart Power Socket API
+  description: API for Smart Power Socket
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001
+tags:
+  - name: socket
+    description: Smart socket
+paths:
+  /socket/{socketId}/charging-session:
+    post:
+      tags:
+        - socket
+      summary: Create new charging session for smart socket
+      description: Start new charging session
+      operationId: createSocketChargingSession
+      parameters:
+        - name: socketId
+          in: path
+          description: Socket ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Charging session created
+        "400":
+          description: Invalid input
+      x-swagger-router-controller: Socket
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        tagId:
+          maxLength: 14
+          minLength: 14
+          type: string
+          description: RFID card unique ID number
+          example: A1B2C3D4C3B2A1

@@ -1,0 +1,12 @@
+{
+  "name": "smart-power-socket-back-end",
+  "version": "1.0.0",
+  "description": "Back-end for Smart Power Socket",
+  "scripts": {
+    "start": "node src/index"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "oas3-tools": "^2.2.3"
+  }
+}
