@@ -52,8 +52,34 @@ describe("Socket API", () => {
           ],
         }));
   });
-  describe("Valid socket id is provided", () => {
-    const socketId = "1b19dd60-9b48-406a-bd3b-297a15702e8d";
+  describe("Valid but not existing socket id is provided", () => {
+    const socketId = "abc13168-65e2-4f21-8dcb-cda2d3e70c7e";
+    test("socket session creation should not be authorized", async () => {
+      await request(app)
+        .post(`/socket/${socketId}/charging-session`)
+        .send({ paymentMethodId: "1" })
+        .expect(400, {
+          message: "Unauthorized",
+        });
+    });
+    test("socket session closure should not be authorized", async () => {
+      await request(app)
+        .delete(`/socket/${socketId}/charging-session`)
+        .expect(400, {
+          message: "Unauthorized",
+        });
+    });
+    test("socket session update should not be authorized", async () => {
+      await request(app)
+        .put(`/socket/${socketId}/charging-session`)
+        .send({ whConsumed: 1 })
+        .expect(400, {
+          message: "Unauthorized",
+        });
+    });
+  });
+  describe("Valid and existing socket id is provided", () => {
+    const socketId = "fce13168-65e2-4f21-8dcb-cda2d3e70c7e";
     const paymentMethodId = "pm_1IqY3cJesuVxKjM8aWV7yf9R";
     test("socket session should be created", async () => {
       await request(app)

@@ -4,14 +4,22 @@ const socketChargingSessionPaymentRepository = require("./payment/repository");
 
 const PRICE_PER_KWH = 30;
 
+const SOCKET_ID = "fce13168-65e2-4f21-8dcb-cda2d3e70c7e";
+
 exports.createSocketChargingSession = async (socketId, paymentMethodId) => {
+  if (socketId !== SOCKET_ID) {
+    throw new Error("Unauthorized");
+  }
   if (socketChargingSessionRepository.find()) {
     throw Error("Socket charging session is already started");
   }
   socketChargingSessionRepository.save({ socketId, paymentMethodId });
 };
 
-exports.closeSocketChargingSession = async () => {
+exports.closeSocketChargingSession = async (socketId) => {
+  if (socketId !== SOCKET_ID) {
+    throw new Error("Unauthorized");
+  }
   const session = socketChargingSessionRepository.find();
   if (!session) {
     throw Error("Socket charging session is not started");
@@ -48,7 +56,10 @@ exports.closeSocketChargingSession = async () => {
   socketChargingSessionRepository.delete();
 };
 
-exports.updateSocketChargingSession = async (chargingSession) => {
+exports.updateSocketChargingSession = async (socketId, chargingSession) => {
+  if (socketId !== SOCKET_ID) {
+    throw new Error("Unauthorized");
+  }
   if (!socketChargingSessionRepository.find()) {
     throw Error("Socket charging session is not started");
   }

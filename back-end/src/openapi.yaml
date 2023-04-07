@@ -24,6 +24,8 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        "$ref": "#/components/schemas/ChargingSessionRequest"
       responses:
         "200":
           description: Charging session created
@@ -82,3 +84,10 @@ components:
           format: double
       required:
         - "whConsumed"
+    ChargingSessionRequest:
+      type: object
+      properties:
+        paymentMethodId:
+          type: string
+      required:
+        - "paymentMethodId"

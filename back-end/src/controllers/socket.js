@@ -14,8 +14,9 @@ module.exports.createSocketChargingSession = (req, res, next) => {
 };
 
 module.exports.closeSocketChargingSession = (req, res, next) => {
+  req.params.socketId = req.url.match(/\/socket\/(.+)\/.+/)[1];
   socketChargingSessionService
-    .closeSocketChargingSession()
+    .closeSocketChargingSession(req.params.socketId)
     .then((response) => {
       utils.writeJson(res, response);
     })
@@ -25,8 +26,9 @@ module.exports.closeSocketChargingSession = (req, res, next) => {
 };
 
 module.exports.updateSocketChargingSession = (req, res, next) => {
+  req.params.socketId = req.url.match(/\/socket\/(.+)\/.+/)[1];
   socketChargingSessionService
-    .updateSocketChargingSession(req.body)
+    .updateSocketChargingSession(req.params.socketId, req.body)
     .then((response) => {
       utils.writeJson(res, response);
     })
