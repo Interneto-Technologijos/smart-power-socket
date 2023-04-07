@@ -1,0 +1,57 @@
+.body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media screen and (min-width: 1080px) {
+  .body {
+    width: 33%;
+    margin-left: 33%;
+  }
+}
+
+@media screen and (max-width: 1079px) and (min-width: 760px) {
+  .body {
+    width: 66%;
+    margin-left: 17%;
+  }
+}
+
+@media screen and (max-width: 759px) {
+  .body {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+button {
+  display: inline-block;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 24px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:disabled {
+  background-color: #d5d5d5;
+  color: #9b9b9b;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background-color: #0062cc;
+}
+
+button:disabled:hover {
+  background-color: #d5d5d5;
+}

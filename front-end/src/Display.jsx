@@ -1,10 +1,11 @@
 import React from "react";
+import "./Display.css";
 
 export default ({ text }) => {
   return (
     <>
       <h2>Display</h2>
-      <div>Text: {text}</div>
+      <div className="display">{text}</div>
     </>
   );
 };

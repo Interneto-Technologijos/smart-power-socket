@@ -1,5 +1,6 @@
 import React from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import "./CardReader.css";
 
 export default ({ onMessage, onAuthorizationSuccess }) => {
   const stripe = useStripe();
@@ -29,8 +30,7 @@ export default ({ onMessage, onAuthorizationSuccess }) => {
 
       <form onSubmit={handleSubmit}>
         <label>
-          Card details
-          <CardElement />
+          <CardElement className="CardElement" />
         </label>
         <button type="submit" disabled={!stripe}>
           Pay
