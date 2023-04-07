@@ -1,4 +1,8 @@
+const stripe = require("../../stripe");
 const socketChargingSessionRepository = require("./repository");
+const socketChargingSessionPaymentRepository = require("./payment/repository");
+
+const PRICE_PER_KWH = 30;
 
 exports.createSocketChargingSession = async (socketId, paymentMethodId) => {
   if (socketChargingSessionRepository.find()) {
@@ -8,9 +12,39 @@ exports.createSocketChargingSession = async (socketId, paymentMethodId) => {
 };
 
 exports.closeSocketChargingSession = async () => {
-  if (!socketChargingSessionRepository.find()) {
+  const session = socketChargingSessionRepository.find();
+  if (!session) {
     throw Error("Socket charging session is not started");
   }
+  const amount = (session.whConsumed / 1000) * PRICE_PER_KWH;
+  const customer = await stripe.customers.create({
+    email: `customer${Date.now()}@test.tt`,
+    payment_method: session.paymentMethodId,
+  });
+  let status;
+  try {
+    const charge = await stripe.charges.create({
+      amount,
+      currency: "eur",
+      customer: customer.id,
+      payment_method: session.paymentMethodId,
+      description: "Test payment",
+    });
+    console.log(charge);
+    status = "SUCCESS";
+  } catch (error) {
+    console.error(error.message);
+    status = "FAILED";
+  }
+  const payment = {
+    socketId: session.socketId,
+    whConsumed: session.whConsumed,
+    amount,
+    customerEmail: customer.email,
+    status,
+  };
+  socketChargingSessionPaymentRepository.save(payment);
+  console.log(`Payment created: ${JSON.stringify(payment)}`);
   socketChargingSessionRepository.delete();
 };
 

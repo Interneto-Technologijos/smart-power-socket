@@ -1,11 +1,14 @@
 const request = require("supertest");
 
 const app = require("../app");
+const stripe = require("../stripe");
 const socketChargingSessionRepository = require("../socket/charging-session/repository");
+const socketChargingSessionPaymentRepository = require("../socket/charging-session/payment/repository");
 
 describe("Socket API", () => {
   beforeEach(() => {
     socketChargingSessionRepository.truncate();
+    socketChargingSessionPaymentRepository.truncate();
   });
   describe("Invalid socket id is provided", () => {
     const socketId = "invalid";
@@ -77,9 +80,22 @@ describe("Socket API", () => {
         });
     });
     describe("Session for socket ID is already started", () => {
-      beforeEach(() => {
+      let paymentMethod;
+      const whConsumed = 1000;
+      beforeEach(async () => {
+        paymentMethod = await stripe.paymentMethods.create({
+          type: "card",
+          card: {
+            number: "4242424242424242",
+            exp_month: 12,
+            exp_year: 2042,
+            cvc: "123",
+          },
+        });
         socketChargingSessionRepository.save({
           socketId,
+          paymentMethodId: paymentMethod.id,
+          whConsumed,
         });
       });
       test("socket session creation should fail", async () => {
@@ -89,11 +105,20 @@ describe("Socket API", () => {
             message: "Socket charging session is already started",
           });
       });
-      test("socket session should be close", async () => {
+      test("socket session should be close and charge payment method provided", async () => {
         await request(app)
           .delete(`/socket/${socketId}/charging-session`)
           .expect(200);
         expect(socketChargingSessionRepository.find()).toBeUndefined();
+        expect(
+          socketChargingSessionPaymentRepository.findAll()[0]
+        ).toMatchObject({
+          socketId,
+          whConsumed,
+          amount: 30,
+          customerEmail: expect.any(String),
+          status: "FAILED",
+        });
       });
       describe("Consumed power is not provided", () => {
         test.skip("socket session update should fail", async () => {
