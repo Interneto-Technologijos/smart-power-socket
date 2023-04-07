@@ -41,7 +41,11 @@ export default () => {
   }, [chartStartTimestamp]);
 
   useEffect(() => {
-    setWhConsumed(sessionLength * WH_PER_SECOND);
+    const whConsumed = sessionLength * WH_PER_SECOND;
+    setWhConsumed(whConsumed);
+    if (isCharging) {
+      socketClient.updateSocketChargingSession(SOCKET_ID, whConsumed);
+    }
   }, [sessionLength]);
 
   useEffect(() => {
