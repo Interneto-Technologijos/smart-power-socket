@@ -24,7 +24,7 @@ exports.closeSocketChargingSession = async (socketId) => {
   if (!session) {
     throw Error("Socket charging session is not started");
   }
-  const amount = (session.whConsumed / 1000) * PRICE_PER_KWH;
+  const amount = Math.ceil((session.whConsumed / 1000) * PRICE_PER_KWH);
   const customer = await stripe.customers.create({
     email: `customer${Date.now()}@test.tt`,
     payment_method: session.paymentMethodId,
