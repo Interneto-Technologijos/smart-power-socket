@@ -1,6 +1,13 @@
-export const createSocketChargingSession = async (socketId) => {
+export const createSocketChargingSession = async (
+  socketId,
+  paymentMethodId
+) => {
   await fetch(`http://localhost:8080/socket/${socketId}/charging-session`, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ paymentMethodId }),
   });
 };
 

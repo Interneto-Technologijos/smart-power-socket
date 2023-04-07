@@ -1,10 +1,10 @@
 const socketChargingSessionRepository = require("./repository");
 
-exports.createSocketChargingSession = async (socketId) => {
+exports.createSocketChargingSession = async (socketId, paymentMethodId) => {
   if (socketChargingSessionRepository.find()) {
     throw Error("Socket charging session is already started");
   }
-  socketChargingSessionRepository.save({ socketId });
+  socketChargingSessionRepository.save({ socketId, paymentMethodId });
 };
 
 exports.closeSocketChargingSession = async () => {

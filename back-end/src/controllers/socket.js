@@ -4,7 +4,7 @@ const socketChargingSessionService = require("../socket/charging-session/service
 module.exports.createSocketChargingSession = (req, res, next) => {
   req.params.socketId = req.url.match(/\/socket\/(.+)\/.+/)[1];
   socketChargingSessionService
-    .createSocketChargingSession(req.params.socketId)
+    .createSocketChargingSession(req.params.socketId, req.body.paymentMethodId)
     .then((response) => {
       utils.writeJson(res, response);
     })

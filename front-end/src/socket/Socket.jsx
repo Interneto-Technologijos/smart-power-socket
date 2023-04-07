@@ -31,13 +31,15 @@ export default () => {
     setIsPlugged(false);
   };
 
-  const onPaymentSuccess = () => {
+  const onAuthorizationSuccess = (paymentMethod) => {
     if (!isPlugged) {
       setText("Nothing is plugged in");
       return;
     }
     setIsCharging(true);
-    socketClient.createSocketChargingSession(SOCKET_ID).catch(console.error);
+    socketClient
+      .createSocketChargingSession(SOCKET_ID, paymentMethod.id)
+      .catch(console.error);
   };
 
   useEffect(() => {
@@ -102,7 +104,9 @@ export default () => {
       <Elements stripe={stripePromise}>
         <CardReader
           onMessage={(message) => setText(message)}
-          onPaymentSuccess={() => onPaymentSuccess()}
+          onAuthorizationSuccess={(paymentMethod) =>
+            onAuthorizationSuccess(paymentMethod)
+          }
         />
       </Elements>
     </>

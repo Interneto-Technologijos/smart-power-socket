@@ -51,12 +51,15 @@ describe("Socket API", () => {
   });
   describe("Valid socket id is provided", () => {
     const socketId = "1b19dd60-9b48-406a-bd3b-297a15702e8d";
+    const paymentMethodId = "pm_1IqY3cJesuVxKjM8aWV7yf9R";
     test("socket session should be created", async () => {
       await request(app)
         .post(`/socket/${socketId}/charging-session`)
+        .send({ paymentMethodId })
         .expect(200);
       expect(socketChargingSessionRepository.find()).toMatchObject({
         socketId,
+        paymentMethodId,
       });
     });
     test("socket session close should fail", async () => {

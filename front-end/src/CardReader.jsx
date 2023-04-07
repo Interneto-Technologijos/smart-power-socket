@@ -1,7 +1,7 @@
 import React from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
-export default ({ onMessage, onPaymentSuccess }) => {
+export default ({ onMessage, onAuthorizationSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -20,10 +20,8 @@ export default ({ onMessage, onPaymentSuccess }) => {
       return;
     }
 
-    onMessage(`Payment successful!`);
-    // Send the payment method ID to your server for processing
-    // e.g. using fetch or Axios
-    onPaymentSuccess();
+    onMessage(`Authorization successful!`);
+    onAuthorizationSuccess(paymentMethod);
   };
   return (
     <>
